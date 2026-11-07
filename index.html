@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vérification de vignette - 18V 5330 E</title>
+<style>
+  :root {
+    --bg: #f4f5f7; --border-outer: #e2e4e8; --card-bg: #ffffff;
+    --title-color: #1f2a37; --label-color: #1f2a37; --value-color: #6b5d52;
+    --line-color: #ececec; --green: #2e8b4f; --red: #c0392b;
+  }
+  html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
+  * { box-sizing: border-box; }
+  body { margin:0; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif; background:var(--bg); min-height:100vh; display:flex; justify-content:center; padding:24px; }
+  .page { width:100%; max-width:1200px; border:1px solid var(--border-outer); border-radius:8px; padding:32px; background:var(--bg); }
+  .page-title { font-size:20px; color:var(--title-color); margin:0 0 24px 0; font-weight:400; }
+  .card { max-width:620px; margin:0; background:var(--card-bg); border-radius:8px; box-shadow:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04); overflow:hidden; }
+  .status-banner { margin:24px 24px 8px 24px; padding:16px 20px; border-radius:6px; text-align:center; color:#fff; font-weight:700; font-size:17px; letter-spacing:0.5px; background:var(--green); transition:background-color 0.3s ease; }
+  .status-banner.expired { background:var(--red); }
+  .details { padding:8px 24px 24px 24px; }
+  .row { display:grid; grid-template-columns: max-content minmax(0,1fr); align-items:baseline; column-gap:12px; padding:16px 0; border-bottom:1px solid var(--line-color); }
+  .row:last-child { border-bottom:none; }
+  .row .label { font-weight:700; color:var(--label-color); font-size:15px; white-space:nowrap; }
+  .row .value { color:var(--value-color); font-size:15px; text-align:right; overflow-wrap:break-word; justify-self:end; }
+  .row .value.status-text { font-weight:600; }
+  .row .value.status-text.expired { color:var(--red); }
+  .row .value.status-text.valid { color:var(--green); }
+  @media (max-width:480px) {
+    body { padding:12px; } .page { padding:16px; border-radius:6px; }
+    .page-title { font-size:16px; margin-bottom:16px; }
+    .status-banner { margin:16px 16px 4px 16px; font-size:14px; padding:12px 10px; }
+    .details { padding:4px 16px 16px 16px; }
+    .row { column-gap:8px; padding:12px 0; }
+    .row .label { font-size:12.5px; }
+    .row .value { font-size:12.5px; }
+  }
+  @media (max-width:360px) {
+    .row { column-gap:6px; }
+    .row .label { font-size:11px; }
+    .row .value { font-size:11px; }
+  }
+  @media (max-width:320px) {
+    .row .label { font-size:10px; }
+    .row .value { font-size:10px; }
+  }
+</style>
+</head>
+<body>
+  <div class="page">
+    <h1 class="page-title">Vérification de vignette</h1>
+    <div class="card">
+      <div id="statusBanner" class="status-banner">VALIDE</div>
+      <div class="details">
+        <div class="row"><span class="label">Plaque</span><span class="value" id="fPlaque">18V 5330 E</span></div>
+        <div class="row"><span class="label">Vignette</span><span class="value" id="fType">Véhicule Particulier</span></div>
+        <div class="row"><span class="label">Couleur</span><span class="value" id="fCouleur">#000000</span></div>
+        <div class="row"><span class="label">Vignette de validité</span><span class="value" id="fValidite">01/04/2027</span></div>
+        <div class="row"><span class="label">Validité vitres fumées</span><span class="value" id="fVitres">02/04/2026</span></div>
+        <div class="row"><span class="label">Propriétaire</span><span class="value" id="fProprietaire">ABAKAR IDRISS MISS MORO</span></div>
+        <div class="row"><span class="label">Téléphone</span><span class="value" id="fTelephone">—</span></div>
+        <div class="row"><span class="label">Statut</span><span class="value status-text" id="fStatut">VALIDE</span></div>
+      </div>
+    </div>
+  </div>
+  <script>
+    const validiteFR = "01/04/2027";
+    function parseDateFR(str) {
+      const [j, m, a] = str.split("/").map(Number);
+      return new Date(a, m - 1, j, 23, 59, 59);
+    }
+    function applyStatus() {
+      const expirationDate = parseDateFR(validiteFR);
+      const expired = new Date() > expirationDate;
+      const banner = document.getElementById("statusBanner");
+      const statut = document.getElementById("fStatut");
+      banner.textContent = expired ? "EXPIRÉE" : "VALIDE";
+      banner.classList.toggle("expired", expired);
+      statut.textContent = expired ? "EXPIRÉE" : "VALIDE";
+      statut.classList.toggle("expired", expired);
+      statut.classList.toggle("valid", !expired);
+    }
+    applyStatus();
+    setInterval(applyStatus, 60 * 1000);
+  </script>
+</body>
+</html>
